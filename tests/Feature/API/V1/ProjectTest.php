@@ -10,6 +10,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class ProjectTest extends TestCase
 {
     use RefreshDatabase;
+    use WithFaker;
     /**
      @test
      */
@@ -61,7 +62,7 @@ class ProjectTest extends TestCase
             ->assertJsonValidationErrors(['name', 'description']);
     }
     /** @test */
-    public function read_a_project()
+    public function logged_user_can_read_project()
     {
 
         $user = $this->getLoggedUser();
@@ -69,5 +70,17 @@ class ProjectTest extends TestCase
         $this->getJson('/api/projects/' . $project->id)
             ->assertOk()
             ->assertJsonPath('data.name', $project->name);
+    }
+    /** @test */
+    public function logged_user_can_update_project()
+    {
+        $this->withoutExceptionHandling();
+        $this->getLoggedUser();
+        $project1 = Project::factory()->create();
+        $data = ['name' => $this->faker->sentence()];
+        $this->putJson('/api/projects/' . $project1->id, $data)
+            ->assertOK()
+            ->assertJsonPath('data.name', $data['name']);
+        $this->assertDatabaseHas('projects', ['name' => $data['name'], 'id' => 1]);
     }
 }

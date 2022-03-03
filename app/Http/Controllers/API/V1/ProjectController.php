@@ -31,11 +31,23 @@ class ProjectController extends Controller
      * Display the specified resource.
      *
      * @param Request $request
-     * @param  Property  $property
+     * @param  Project  $project
      * @return \Illuminate\Http\Response
      */
     public function show(Request $request, Project $project)
     {
+        return new ProjectResource($project);
+    }
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  Request $request
+     * @param  Project  $project
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, Project $project)
+    {
+        $project->update($request->all());
         return new ProjectResource($project);
     }
 }
