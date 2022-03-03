@@ -23,9 +23,20 @@ class ProjectRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'name' => 'required',
-            'description' => 'required'
-        ];
+        switch ($this->method()) {
+            case 'POST':
+                return [
+                    'name' => 'required|max:255|string',
+                    'description' => 'required|max:255|string',
+                ];
+                break;
+            case 'PUT':
+                return [
+                    'name' => 'required|max:255|string',
+                ];
+
+            default:
+                break;
+        }
     }
 }

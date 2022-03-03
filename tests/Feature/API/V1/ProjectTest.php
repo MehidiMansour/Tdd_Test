@@ -57,7 +57,7 @@ class ProjectTest extends TestCase
         $this->getLoggedUser();
 
         $this->postJson('/api/projects')
-            ->assertJsonValidationErrors(['name', 'description']);
+            ->assertStatus(422)->assertJsonValidationErrors(['name', 'description']);
     }
     /** @test */
     public function logged_user_can_read_project()
@@ -80,9 +80,16 @@ class ProjectTest extends TestCase
         $this->assertDatabaseHas('projects', ['name' => $payload['name'], 'id' => 1]);
     }
     /** @test */
+    public function validation_for_updating_project()
+    {
+        $this->getLoggedUser();
+        $project = Project::factory()->create();
+        $this->putJson('/api/projects/' . $project->id)
+            ->assertStatus(422)->assertJsonValidationErrors(['name']);
+    }
+    /** @test */
     public function logged_user_can_remove_project()
     {
-
         $this->getLoggedUser();
         $project = Project::factory()->create();
         $this->deleteJson('/api/projects/' . $project->id)

@@ -6,7 +6,8 @@ use App\Models\User;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ProjectRequest;
+use App\Http\Requests\ProjectRequest as StoreRequest;
+use App\Http\Requests\ProjectRequest as UpdateRequest;
 use App\Http\Resources\ProjectResource;
 
 
@@ -22,7 +23,7 @@ class ProjectController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function store(ProjectRequest $request)
+    public function store(StoreRequest $request)
     {
         $validated = $request->validated();
         return new ProjectResource(Project::create($validated));
@@ -45,9 +46,9 @@ class ProjectController extends Controller
      * @param  Project  $project
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Project $project)
+    public function update(UpdateRequest $request, Project $project)
     {
-        $project->update($request->all());
+        $project->update($request->validated());
         return new ProjectResource($project);
     }
     /**
