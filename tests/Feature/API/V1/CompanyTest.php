@@ -10,6 +10,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class CompanyTest extends TestCase
 {
     use RefreshDatabase;
+    use WithFaker;
     /**
      @test
      */
@@ -28,8 +29,28 @@ class CompanyTest extends TestCase
         $user = $this->getLoggedUser();
         $company = Company::factory(['user_id' => $user->id])->create();
         $this->getJson('/api/companies')
-            ->dump()
             ->assertOk()
             ->assertJsonCount(1, 'data');
+    }
+    /**
+     @test
+     */
+    public function logged_user_can_create_company()
+    {
+
+        $user = $this->getLoggedUser();
+        $payload = [
+            'name' => $this->faker->sentence(),
+        ];
+        $this->postJson('api/companies', $payload)
+            ->dump()
+            ->assertJsonPath('data.user.name', $user->name)
+            ->assertStatus(201);
+        $this->assertDatabaseCount('companies', 1);
+        $this->assertDatabaseHas('companies', [
+            'id' => 1,
+            'name' => $payload['name'],
+            'user_id' => $user->id,
+        ]);
     }
 }

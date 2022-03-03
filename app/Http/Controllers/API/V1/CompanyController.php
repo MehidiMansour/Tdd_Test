@@ -37,7 +37,7 @@ class CompanyController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        return new CompanyResource(auth()->user()->companies()->create($request->all()));
     }
 
     /**
