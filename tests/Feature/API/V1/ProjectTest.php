@@ -31,7 +31,9 @@ class ProjectTest extends TestCase
             ->assertOk()
             ->assertJsonCount(1, 'data');
     }
-    /** @test */
+    /**
+     @test
+     */
     public function logged_user_can_create_project()
     {
         $this->getLoggedUser();
