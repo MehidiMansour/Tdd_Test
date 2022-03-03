@@ -22,7 +22,7 @@ class ProjectTest extends TestCase
     /**
      @test
      */
-    public function list_projects()
+    public function logged_user_can_get_list_projects()
     {
         $project = Project::factory()->create();
         $user = $this->getLoggedUser();
@@ -34,7 +34,6 @@ class ProjectTest extends TestCase
     /** @test */
     public function logged_user_can_create_project()
     {
-        $this->withExceptionHandling();
         $this->getLoggedUser();
         $payload = [
             'name' => 'project',
@@ -55,7 +54,6 @@ class ProjectTest extends TestCase
     /** @test */
     public function validation_for_creating_project()
     {
-        /* $this->withoutExceptionHandling(); */
         $this->getLoggedUser();
 
         $this->postJson('/api/projects')
@@ -64,8 +62,7 @@ class ProjectTest extends TestCase
     /** @test */
     public function logged_user_can_read_project()
     {
-
-        $user = $this->getLoggedUser();
+        $this->getLoggedUser();
         $project = Project::factory()->create();
         $this->getJson('/api/projects/' . $project->id)
             ->assertOk()
@@ -74,13 +71,23 @@ class ProjectTest extends TestCase
     /** @test */
     public function logged_user_can_update_project()
     {
-        $this->withoutExceptionHandling();
         $this->getLoggedUser();
-        $project1 = Project::factory()->create();
-        $data = ['name' => $this->faker->sentence()];
-        $this->putJson('/api/projects/' . $project1->id, $data)
+        $project = Project::factory()->create();
+        $payload = ['name' => $this->faker->sentence()];
+        $this->putJson('/api/projects/' . $project->id, $payload)
             ->assertOK()
-            ->assertJsonPath('data.name', $data['name']);
-        $this->assertDatabaseHas('projects', ['name' => $data['name'], 'id' => 1]);
+            ->assertJsonPath('data.name', $payload['name']);
+        $this->assertDatabaseHas('projects', ['name' => $payload['name'], 'id' => 1]);
+    }
+    /** @test */
+    public function logged_user_can_remove_project()
+    {
+
+        $this->getLoggedUser();
+        $project = Project::factory()->create();
+        $this->deleteJson('/api/projects/' . $project->id)
+            ->assertOK();
+        $this->assertDatabaseMissing('projects', ['id' => 1, 'name' => $project->name]);
+        $this->assertDatabaseCount('projects', 0);
     }
 }

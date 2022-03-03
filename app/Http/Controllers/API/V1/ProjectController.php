@@ -50,4 +50,18 @@ class ProjectController extends Controller
         $project->update($request->all());
         return new ProjectResource($project);
     }
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param Request $request
+     * @param  Project  $project
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Request $request, Project $project)
+    {
+        $project->delete();
+        return response()->json([
+            'message' => 'Project deleted successfully'
+        ], 200);
+    }
 }
