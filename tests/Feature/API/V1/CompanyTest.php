@@ -60,4 +60,15 @@ class CompanyTest extends TestCase
         $this->postJson('/api/companies')
             ->assertStatus(422)->assertJsonValidationErrors(['name']);
     }
+    /** @test */
+    public function logged_user_can_read_company()
+    {
+        $this->withExceptionHandling();
+        $user = $this->getLoggedUser();
+        $company = Company::factory(['user_id' => $user->id])->create();
+        $this->getJson('/api/companies/' . $company->id)
+            ->assertOk()
+            ->assertJsonPath('data.name', $company->name)
+            ->assertJsonPath('data.user.name', $user->name);
+    }
 }
