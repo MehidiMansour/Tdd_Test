@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\V1;
 use App\Models\Company;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CompanyRequest;
 use App\Http\Resources\CompanyResource;
 
 class CompanyController extends Controller
@@ -35,9 +36,10 @@ class CompanyController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CompanyRequest $request)
     {
-        return new CompanyResource(auth()->user()->companies()->create($request->all()));
+        $validated = $request->validated();
+        return new CompanyResource(auth()->user()->companies()->create($validated));
     }
 
     /**

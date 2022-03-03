@@ -43,7 +43,6 @@ class CompanyTest extends TestCase
             'name' => $this->faker->sentence(),
         ];
         $this->postJson('api/companies', $payload)
-            ->dump()
             ->assertJsonPath('data.user.name', $user->name)
             ->assertStatus(201);
         $this->assertDatabaseCount('companies', 1);
@@ -52,5 +51,13 @@ class CompanyTest extends TestCase
             'name' => $payload['name'],
             'user_id' => $user->id,
         ]);
+    }
+    /** @test */
+    public function validation_for_creating_company()
+    {
+        $user = $this->getLoggedUser();
+
+        $this->postJson('/api/companies')
+            ->assertStatus(422)->assertJsonValidationErrors(['name']);
     }
 }
