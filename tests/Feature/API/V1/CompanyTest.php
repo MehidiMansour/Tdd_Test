@@ -71,4 +71,16 @@ class CompanyTest extends TestCase
             ->assertJsonPath('data.name', $company->name)
             ->assertJsonPath('data.user.name', $user->name);
     }
+    /** @test */
+    public function logged_user_can_update_company()
+    {
+        $user = $this->getLoggedUser();
+        $company = Company::factory(['user_id' => $user->id])->create();
+        $payload = ['name' => $this->faker->sentence()];
+        $this->putJson('/api/companies/' . $company->id, $payload)
+            ->assertOK()
+            ->assertJsonPath('data.name', $payload['name'])
+            ->assertJsonPath('data.user.name', $user->name);
+        $this->assertDatabaseHas('companies', ['name' => $payload['name'], 'id' => 1]);
+    }
 }
