@@ -60,4 +60,14 @@ class ProjectTest extends TestCase
         $this->postJson('/api/projects')
             ->assertJsonValidationErrors(['name', 'description']);
     }
+    /** @test */
+    public function read_a_project()
+    {
+
+        $user = $this->getLoggedUser();
+        $project = Project::factory()->create();
+        $this->getJson('/api/projects/' . $project->id)
+            ->assertOk()
+            ->assertJsonPath('data.name', $project->name);
+    }
 }

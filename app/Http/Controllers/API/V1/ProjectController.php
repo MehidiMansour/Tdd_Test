@@ -27,4 +27,15 @@ class ProjectController extends Controller
         $validated = $request->validated();
         return new ProjectResource(Project::create($validated));
     }
+    /**
+     * Display the specified resource.
+     *
+     * @param Request $request
+     * @param  Property  $property
+     * @return \Illuminate\Http\Response
+     */
+    public function show(Request $request, Project $project)
+    {
+        return new ProjectResource($project);
+    }
 }
