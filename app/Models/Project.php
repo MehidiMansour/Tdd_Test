@@ -11,6 +11,7 @@ class Project extends Model
     use HasFactory;
 
     protected $fillable = ['name', 'duration', 'description', 'level', 'status'];
+
     /*
     |------------------------------------------------------------------------------------
     | Relations

@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers\API\V1;
 
+use App\Models\User;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ProjectRequest;
 use App\Http\Resources\ProjectResource;
+
 
 class ProjectController extends Controller
 {
@@ -19,9 +22,9 @@ class ProjectController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function store(Request $request)
+    public function store(ProjectRequest $request)
     {
-        $project = Project::create($request->all());
-        return new ProjectResource($project);
+        $validated = $request->validated();
+        return new ProjectResource(Project::create($validated));
     }
 }

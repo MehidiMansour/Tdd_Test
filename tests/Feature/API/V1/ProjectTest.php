@@ -15,7 +15,6 @@ class ProjectTest extends TestCase
      */
     public function unlogged_user_cannot_access_to_project()
     {
-        /* $this->withExceptionHandling(); */
         $this->getJson('/api/projects')
             ->assertUnauthorized();
     }
@@ -24,7 +23,6 @@ class ProjectTest extends TestCase
      */
     public function list_projects()
     {
-        /* $this->withExceptionHandling(); */
         $project = Project::factory()->create();
         $user = $this->getLoggedUser();
         $project->users()->attach($user);
@@ -35,7 +33,7 @@ class ProjectTest extends TestCase
     /** @test */
     public function logged_user_can_create_project()
     {
-        $this->withoutExceptionHandling();
+        $this->withExceptionHandling();
         $this->getLoggedUser();
         $payload = [
             'name' => 'project',
@@ -49,7 +47,17 @@ class ProjectTest extends TestCase
         $this->assertDatabaseCount('projects', 1);
         $this->assertDatabaseHas('projects', [
             'id' => 1,
-            'name' => $payload['name']
+            'name' => $payload['name'],
+            'description' => $payload['description']
         ]);
+    }
+    /** @test */
+    public function validation_for_creating_project()
+    {
+        /* $this->withoutExceptionHandling(); */
+        $this->getLoggedUser();
+
+        $this->postJson('/api/projects')
+            ->assertJsonValidationErrors(['name', 'description']);
     }
 }

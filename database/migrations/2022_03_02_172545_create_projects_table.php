@@ -17,9 +17,9 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('description');
-            $table->unsignedBigInteger('status');
-            $table->unsignedBigInteger('duration');
-            $table->unsignedBigInteger('level');
+            $table->unsignedBigInteger('status')->nullable();
+            $table->unsignedBigInteger('duration')->nullable();
+            $table->unsignedBigInteger('level')->nullable();
             $table->timestamps();
         });
     }
