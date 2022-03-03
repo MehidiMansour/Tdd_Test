@@ -17,9 +17,9 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('description');
-            $table->string('status');
+            $table->unsignedBigInteger('status');
             $table->unsignedBigInteger('duration');
-            $table->string('level');
+            $table->unsignedBigInteger('level');
             $table->timestamps();
         });
     }

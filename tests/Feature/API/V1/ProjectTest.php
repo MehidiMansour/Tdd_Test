@@ -29,8 +29,27 @@ class ProjectTest extends TestCase
         $user = $this->getLoggedUser();
         $project->users()->attach($user);
         $this->getJson('/api/projects')
-            ->dump()
             ->assertOk()
             ->assertJsonCount(1, 'data');
+    }
+    /** @test */
+    public function logged_user_can_create_project()
+    {
+        $this->withoutExceptionHandling();
+        $this->getLoggedUser();
+        $payload = [
+            'name' => 'project',
+            'status' => 1,
+            'description' => 'description project',
+            'duration' => 2,
+            'level' => 3,
+        ];
+        $this->postJson('api/projects', $payload)
+            ->assertStatus(201);
+        $this->assertDatabaseCount('projects', 1);
+        $this->assertDatabaseHas('projects', [
+            'id' => 1,
+            'name' => $payload['name']
+        ]);
     }
 }

@@ -18,10 +18,10 @@ class ProjectFactory extends Factory
     {
         return [
             'name' => $this->faker->name(),
-            'status' => $this->faker->name(),
-            'duration' => 10,
+            'status' => rand(1, 4),
+            'duration' => rand(10, 40),
             'description' => $this->faker->sentence(),
-            'level' => 2,
+            'level' => rand(1, 4),
         ];
     }
 }

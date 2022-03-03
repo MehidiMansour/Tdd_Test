@@ -13,4 +13,15 @@ class ProjectController extends Controller
     {
         return ProjectResource::collection(Project::all());
     }
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function store(Request $request)
+    {
+        $project = Project::create($request->all());
+        return new ProjectResource($project);
+    }
 }
