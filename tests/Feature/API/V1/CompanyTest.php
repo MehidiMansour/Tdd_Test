@@ -83,4 +83,14 @@ class CompanyTest extends TestCase
             ->assertJsonPath('data.user.name', $user->name);
         $this->assertDatabaseHas('companies', ['name' => $payload['name'], 'id' => 1]);
     }
+    /** @test */
+    public function logged_user_can_remove_company()
+    {
+        $user =  $this->getLoggedUser();
+        $company = Company::factory(['user_id' => $user->id])->create();
+        $this->deleteJson('/api/companies/' . $company->id)
+            ->assertOK();
+        $this->assertDatabaseMissing('companies', ['id' => 1, 'name' => $company->name]);
+        $this->assertDatabaseCount('companies', 0);
+    }
 }

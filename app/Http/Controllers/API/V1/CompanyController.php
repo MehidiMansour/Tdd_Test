@@ -83,8 +83,11 @@ class CompanyController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, Company $company)
     {
-        //
+        $company->delete();
+        return response()->json([
+            'message' => 'Company deleted successfully'
+        ], 200);
     }
 }
