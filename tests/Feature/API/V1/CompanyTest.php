@@ -93,4 +93,34 @@ class CompanyTest extends TestCase
         $this->assertDatabaseMissing('companies', ['id' => 1, 'name' => $company->name]);
         $this->assertDatabaseCount('companies', 0);
     }
+    /** @test */
+    public function user_can_manage_only_our_companies()
+    {
+        $user = $this->getLoggedUser();
+        $company1 = Company::factory(['user_id' => $user->id])->create();
+        $company2 = Company::factory()->create();
+        /** index */
+        $this->getJson('/api/companies')
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.name', $company1->name)
+            ->assertJsonPath('data.0.user.name', $user->name);
+        /** show */
+        $this->getJson('/api/companies/' . $company2->id)
+            ->assertForbidden();
+        /** update */
+        $this->putJson('/api/companies/' . $company2->id, ['name' => $this->faker->sentence()])
+            ->assertForbidden();
+        /** delete */
+        $this->deleteJson('/api/companies/' . $company2->id)
+            ->assertForbidden();
+    }
+    /** @test */
+    public function mine_working_fine()
+    {
+        $user = $this->getLoggedUser();
+        $project1 = Company::factory(['user_id' => $user->id])->create();
+        $project2 = Company::factory()->create();
+        $this->assertTrue($project1->isMine);
+        $this->assertFalse($project2->isMine);
+    }
 }

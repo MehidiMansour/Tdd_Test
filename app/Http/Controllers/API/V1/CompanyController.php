@@ -17,7 +17,7 @@ class CompanyController extends Controller
      */
     public function index()
     {
-        return CompanyResource::collection(Company::all());
+        return CompanyResource::collection(Company::mine()->get());
     }
 
     /**
@@ -50,6 +50,7 @@ class CompanyController extends Controller
      */
     public function show(Request $request, Company $company)
     {
+        abort_if(!$company->isMine, 403, 'Can not access to this company');
         return new CompanyResource($company);
     }
 
@@ -73,6 +74,7 @@ class CompanyController extends Controller
      */
     public function update(CompanyRequest $request, Company $company)
     {
+        abort_if(!$company->isMine, 403, 'Can not access to this company');
         $company->update($request->validated());
         return new CompanyResource($company);
     }
@@ -85,6 +87,7 @@ class CompanyController extends Controller
      */
     public function destroy(Request $request, Company $company)
     {
+        abort_if(!$company->isMine, 403, 'Can not access to this company');
         $company->delete();
         return response()->json([
             'message' => 'Company deleted successfully'
